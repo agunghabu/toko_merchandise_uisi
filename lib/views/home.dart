@@ -13,85 +13,62 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
- 
-
   String nama = "";
   String email = "";
   UserController userController = UserController();
 
   @override
   void initState() {
-    
     // TODO: implement initState
     super.initState();
     init();
-
-    
   }
 
   init() async {
-     final pref = await SharedPreferences.getInstance();
-     print("nama: ${pref.getString("nama")}");
+    final pref = await SharedPreferences.getInstance();
+    print("nama: ${pref.getString("nama")}");
 
-      setState(() {
-        nama = pref.getString("nama") ?? "";
-        email = pref.getString("email") ?? "";
-      });
-     
-    
+    setState(() {
+      nama = pref.getString("nama") ?? "";
+      email = pref.getString("email") ?? "";
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Selamat datang, $nama"),
-      ),
+      appBar: AppBar(title: Text("Selamat datang, $nama")),
       drawer: Drawer(
         child: Column(
           children: [
-            UserAccountsDrawerHeader(
-                accountName: Text(nama), accountEmail: Text(email)
-            ),
+            UserAccountsDrawerHeader(accountName: Text(nama), accountEmail: Text(email)),
             ListTile(
               title: Text("Data Barang"),
               onTap: () {
-                Navigator.push(context, 
-                    MaterialPageRoute(builder: (BuildContext context) => HalamanBarang())
-                  );
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => HalamanBarang()));
               },
             ),
             ListTile(
               title: Text("Logout"),
-              onTap: () async  {
+              onTap: () async {
                 await userController.logout();
 
-                Navigator.pushReplacement(
-                  context, 
-                  MaterialPageRoute(builder: (BuildContext context) => LoginScreen())
-                );
-
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => LoginScreen()));
               },
-
-            )
+            ),
           ],
         ),
       ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("Selamat datang, $nama"),
-              SizedBox(height: 20,),
-              ElevatedButton(
-                onPressed: (){
-                  
-                }, 
-                child: Text("Lihat Data Barang"),
-              )
-            ],
-          ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Selamat datang, $nama"),
+            SizedBox(height: 20),
+            ElevatedButton(onPressed: () {}, child: Text("Lihat Data Barang")),
+          ],
         ),
-      );
+      ),
+    );
   }
 }

@@ -5,7 +5,7 @@ $conn = new mysqli("localhost", "root", "", "toko_merch_hmif");
 if($conn->connect_error) {
     $arr= ["result"=>"error","message"=>"unable to connect"];
 }
-$sql = "SELECT * FROM barang ";
+$sql = "SELECT * FROM kategori ";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $result = $stmt->get_result();
