@@ -1,24 +1,45 @@
 <?php
 header("Access-Control-Allow-Origin: *");
-$arr=null;
+$arr = null;
 $conn = new mysqli("localhost", "root", "", "toko_merch_hmif");
-if($conn->connect_error) {
-    $arr= ["result"=>"error","message"=>"unable to connect"];
+if ($conn->connect_error) {
+    $arr = ["result" => "error", "message" => "unable to connect"];
+    echo json_encode($arr);
+    exit;
 }
-$sql = "SELECT * FROM barang ";
+
+$sql = "SELECT * FROM barang";
+$cari = "";
+if (isset($_POST['cari']) && $_POST['cari'] != "") {
+    $cari = "%" . $_POST['cari'] . "%";
+    $sql .= " WHERE nama LIKE ?";
+}
+
 $stmt = $conn->prepare($sql);
+if (!$stmt) {
+    $arr = ["result" => "error", "message" => "SQL prepare error: " . $conn->error];
+    echo json_encode($arr);
+    exit;
+}
+
+if ($cari != "") {
+    $stmt->bind_param("s", $cari);
+}
+
 $stmt->execute();
 $result = $stmt->get_result();
-$data=[];
-if ($result->num_rows > 0) {
-    while($r=mysqli_fetch_assoc($result)){
-        array_push($data,$r);
+$data = [];
+if ($result && $result->num_rows > 0) {
+    while ($r = $result->fetch_assoc()) {
+        array_push($data, $r);
     }
-    $arr=["result"=>"success","data"=>$data];
+    $arr = ["result" => "success", "data" => $data];
 } else {
-    $arr= ["result"=>"error","message"=>"sql error: $sql"];
+    $arr = ["result" => "error", "message" => "No data found or SQL error: $sql"];
 }
+
 echo json_encode($arr);
 $stmt->close();
 $conn->close();
 ?>
+
